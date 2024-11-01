@@ -1,0 +1,6 @@
+{
+    "theme": "dark",
+    "log_limit": 100,
+    "max_bots": 5,
+    "owners": []
+}
