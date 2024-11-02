@@ -1,9 +1,11 @@
 import os
 import subprocess
 import json
+from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CommandHandler, CallbackQueryHandler, ApplicationBuilder, ContextTypes
 
+app = Flask(__name__)
 API_TOKEN = 'YOUR_MANAGER_BOT_TOKEN'
 ADMIN_USER_ID = 'YOUR_TELEGRAM_USER_ID'
 BOT_PATH = "/path/to/your/bots"
@@ -72,15 +74,20 @@ async def add_owner(update: Update, context: ContextTypes.DEFAULT_TYPE):
     save_user_settings(settings)
     await update.message.reply_text(f"User {user_id} সফলভাবে ওউনার হিসেবে যোগ হয়েছে।")
 
-# Add other functions similarly...
+# বাকি কমান্ডগুলোও এখানে যুক্ত করতে পারেন...
 
 def main():
-    app = ApplicationBuilder().token(API_TOKEN).build()
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("add_owner", add_owner))
-    # Add other handlers...
-    app.add_handler(CallbackQueryHandler(button_handler))
-    app.run_polling()
+    telegram_app = ApplicationBuilder().token(API_TOKEN).build()
+    telegram_app.add_handler(CommandHandler("start", start))
+    telegram_app.add_handler(CommandHandler("add_owner", add_owner))
+    # অন্যান্য হ্যান্ডলারও যুক্ত করুন...
+    telegram_app.add_handler(CallbackQueryHandler(button_handler))
+    telegram_app.run_polling()
+
+@app.route('/')
+def home():
+    return "Bot Manager is running!"
 
 if __name__ == "__main__":
     main()
+    app.run(host="0.0.0.0", port=5000)  # এখানে Flask পোর্ট সেট করা হয়েছে
